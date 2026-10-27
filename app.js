@@ -1,102 +1,53 @@
 // =========================================================
-// Laboratorio 05 — Programación imperativa + arrays
+// Laboratorio 06 — app.js (versión funcional)
+// La captura sigue siendo imperativa (C05); el reporte usa
+// las funciones puras de functional-utils.js.
 // =========================================================
 
-// 1) Globales: 2 arrays paralelos.
-//    nombres[i] y valores[i] describen el MISMO movimiento.
-//    Convención de signos: positivo = ingreso, negativo = gasto.
 let nombres = [];
 let valores = [];
 
-// 2) Funciones imperativas (no reciben parámetros y usan el estado global)
-
+// Captura imperativa (C05) — la mantenemos
 function registrarMovimiento() {
-  const nombre = prompt('Nombre del movimiento:');
+  const nombre = (prompt('Nombre del movimiento:') || '').trim();
   const tipo = (prompt('Tipo (ingreso / gasto):') || '').trim().toLowerCase();
   const monto = parseFloat(prompt('Monto:'));
 
   if (!nombre || (tipo !== 'ingreso' && tipo !== 'gasto') || isNaN(monto) || monto <= 0) {
-    alert('Datos inválidos. Intenta de nuevo.');
-    return; // sale de la función sin guardar
+    alert('Datos inválidos.');
+    return;
   }
 
-  // Logro 2: no permitir nombres repetidos (sin distinguir mayúsculas)
-  for (let i = 0; i < nombres.length; i++) {
-    if (nombres[i].toLowerCase() === nombre.trim().toLowerCase()) {
-      alert('Ya existe un movimiento llamado "' + nombres[i] + '". Usa otro nombre.');
-      return;
-    }
+  // Sin for: .some() responde si algún nombre ya existe
+  if (nombres.some(existente => existente.toLowerCase() === nombre.toLowerCase())) {
+    alert(`Ya existe un movimiento llamado "${nombre}". Usa otro nombre.`);
+    return;
   }
 
-  // calcular el valor con signo
-  let valor;
-  if (tipo === 'ingreso') {
-    valor = monto;
-  } else {
-    valor = -monto;
-  }
-
-  // guardar en AMBOS arrays — siempre juntos
-  nombres.push(nombre.trim());
+  const valor = tipo === 'ingreso' ? monto : -monto;
+  nombres.push(nombre);
   valores.push(valor);
-
-  console.log('Movimiento registrado:', nombre.trim(), valor);
 }
 
-function calcularSaldo() {
-  let saldo = 0;
-  for (let i = 0; i < valores.length; i++) {
-    saldo = saldo + valores[i];
-  }
-  return saldo;
-}
+// Acepta "si", "sí", "SI"… (arrow function compacta)
+const quiereContinuar = respuesta => ['si', 'sí'].includes((respuesta || '').trim().toLowerCase());
 
-function mostrarResumen() {
-  // Reto P3: desglose por tipo con dos acumuladores en el mismo for
-  // Logro 1: ingreso más alto y gasto más bajo (más negativo)
-  let totalIngresos = 0;
-  let totalGastos = 0;
-  let indiceIngresoMayor = -1;
-  let indiceGastoMayor = -1;
-
-  for (let i = 0; i < valores.length; i++) {
-    if (valores[i] > 0) {
-      totalIngresos = totalIngresos + valores[i];
-      if (indiceIngresoMayor === -1 || valores[i] > valores[indiceIngresoMayor]) {
-        indiceIngresoMayor = i;
-      }
-    } else {
-      totalGastos = totalGastos + valores[i];
-      if (indiceGastoMayor === -1 || valores[i] < valores[indiceGastoMayor]) {
-        indiceGastoMayor = i;
-      }
-    }
-  }
-
-  console.log('--- Resumen Final ---');
-  console.log('Total de movimientos:', nombres.length);
-  console.log('Total ingresos: $' + totalIngresos.toFixed(2));
-  console.log('Total gastos: $' + Math.abs(totalGastos).toFixed(2));
-  console.log('Saldo total: $' + calcularSaldo().toFixed(2));
-
-  if (indiceIngresoMayor !== -1) {
-    console.log('Ingreso más alto: ' + nombres[indiceIngresoMayor] + ' ($' + valores[indiceIngresoMayor].toFixed(2) + ')');
-  }
-  if (indiceGastoMayor !== -1) {
-    console.log('Gasto más bajo (más negativo): ' + nombres[indiceGastoMayor] + ' ($' + valores[indiceGastoMayor].toFixed(2) + ')');
-  }
-}
-
-// Reto P2: acepta "si", "sí", "SI", "Si"… (null si se cancela el prompt)
-function quiereContinuar(respuesta) {
-  const texto = (respuesta || '').trim().toLowerCase();
-  return texto === 'si' || texto === 'sí';
-}
-
-// 3) Flujo de ejecución
 let continuar = 'si';
 while (quiereContinuar(continuar)) {
   registrarMovimiento();
   continuar = prompt('¿Registrar otro movimiento? (si/no):');
 }
-mostrarResumen();
+
+// Reporte funcional (C06) — todo viene de functional-utils.js
+imprimirReporte(nombres, valores);
+console.log('Promedio de ingresos: $' + promedioIngresos(valores).toFixed(2));
+
+// Retos y logros
+console.log('Cantidad de gastos:', contarGastos(valores));
+console.log('Promedio por movimiento (absoluto): $' + promedioMovimiento(valores).toFixed(2));
+console.log('¿Gastos dentro de un límite de $500?', validarPresupuesto(valores, 500));
+console.log('Ingreso más alto: $' + ingresoMasAlto(valores).toFixed(2));
+console.log('Gasto más negativo: $' + gastoMasNegativo(valores).toFixed(2));
+console.log('Mediana: $' + mediana(valores).toFixed(2));
+console.log('Desviación estándar: $' + desviacionEstandar(valores).toFixed(2));
+console.log('Categorías por monto:', categorizarPorMonto(valores));
