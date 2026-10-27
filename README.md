@@ -26,3 +26,15 @@ Retos y logros:
 - Composición y DRY: `totalIngresos` reutiliza `obtenerIngresos`; `promedioIngresos` reutiliza `totalIngresos`.
 - `mediana` ordena una copia (`[...valores]`) para no mutar el array original.
 - Retos: `contarGastos`, `promedioMovimiento`, `validarPresupuesto`. Logros: `mediana`, `desviacionEstandar`, `categorizarPorMonto` (bajo < 100, medio 100–999, alto ≥ 1000).
+
+## Laboratorio 07 — Objetos + POO con `class`
+
+- **Nuevo modelo:** de 2 arrays paralelos (tipo por signo) a **1 array de objetos** `{ nombre, tipo, valor }` con tipo explícito y valor siempre positivo.
+- `functional-utils.js` adaptado: filtra por `movimiento.tipo`, `calcularSaldo` ahora es `ingresos − gastos`, `buscarPrimerGastoMayor` usa `valor > monto`, `montosAbsolutos` se elimina e `imprimirReporte(movimientos)` recibe un solo argumento.
+- `oop-objects.js`:
+  - `class Movimiento` construida por capas (molde → constructor con `this` → métodos `esIngreso`, `esGasto`, `datosMovimiento`).
+  - `class Presupuesto` encapsula el array y sus métodos: `agregar`, `eliminar`, `obtenerIngresos`, `obtenerGastos`, `totalIngresos`, `totalGastos`, `saldo`, `buscarPorNombre` y `resumen()`, que devuelve un objeto con nombres en vez de posiciones.
+- Retos: `agruparPorTipo` con `.reduce`, `antiguedadEnDias()` y `topGastos(n)`.
+- Logros: `verificarLimites()` (avisa si los gastos superan el 80 % de los ingresos) y `esValido()`, usado por `agregar` para rechazar movimientos inválidos o con nombre repetido.
+
+`antiguedadEnDias()` usa `this.creadoEn` (un `Date`) porque `this.fecha` es un texto formateado y no se puede restar de forma fiable.

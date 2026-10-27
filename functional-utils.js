@@ -1,105 +1,65 @@
 // =========================================================
-// Laboratorio 06 — Programación funcional + arrow functions
-// Funciones PURAS: misma entrada → misma salida, sin efectos.
-// Nunca declarar aquí `nombres` ni `valores` (viven en app.js).
+// Laboratorio 07 — functional-utils.js adaptado al nuevo modelo
+// Antes: 2 arrays paralelos y el tipo codificado con el signo.
+// Ahora: 1 array de objetos { nombre, tipo, valor } con valor SIEMPRE positivo.
+// La clase Presupuesto (oop-objects.js) absorbe esta lógica como métodos;
+// estas funciones quedan como versión funcional equivalente.
 // =========================================================
 
-// ---------- Parte 1: .map(), .filter(), .find() ----------
+const obtenerIngresos = movimientos =>
+  movimientos.filter(movimiento => movimiento.tipo === 'ingreso');
 
-const obtenerIngresos = valores => valores.filter(valor => valor > 0);
+const obtenerGastos = movimientos =>
+  movimientos.filter(movimiento => movimiento.tipo === 'gasto');
 
-const obtenerGastos = valores => valores.filter(valor => valor < 0);
+const totalIngresos = movimientos =>
+  obtenerIngresos(movimientos).reduce((acumulador, movimiento) => acumulador + movimiento.valor, 0);
 
-const montosAbsolutos = valores => valores.map(valor => Math.abs(valor));
+const totalGastos = movimientos =>
+  obtenerGastos(movimientos).reduce((acumulador, movimiento) => acumulador + movimiento.valor, 0);
 
-const buscarPrimerGastoMayor = (valores, monto) =>
-  valores.find(valor => valor < -monto);
+// ⚠️ CAMBIA DE LÓGICA: antes bastaba sumar valores con signo.
+// Ahora valor es positivo y el tipo es explícito → saldo = ingresos - gastos.
+const calcularSaldo = movimientos =>
+  totalIngresos(movimientos) - totalGastos(movimientos);
 
-// Reto P1: cuántos gastos hay
-const contarGastos = valores => obtenerGastos(valores).length;
-
-// ---------- Parte 2: .reduce() ----------
-
-const calcularSaldo = valores =>
-  valores.reduce((acumulador, valor) => acumulador + valor, 0);
-
-const totalIngresos = valores =>
-  obtenerIngresos(valores).reduce((acumulador, valor) => acumulador + valor, 0);
-
-const totalGastos = valores =>
-  obtenerGastos(valores).reduce((acumulador, valor) => acumulador + valor, 0);
+// ⚠️ EL SIGNO SE INVIERTE: antes buscaba valor < -monto; ahora valor > monto.
+const buscarPrimerGastoMayor = (movimientos, monto) =>
+  obtenerGastos(movimientos).find(movimiento => movimiento.valor > monto);
 
 // Retorna: [cantidad, totalIngresos, totalGastos, saldo]
-const generarValoresReporte = valores => [
-  valores.length,
-  totalIngresos(valores),
-  totalGastos(valores),
-  calcularSaldo(valores)
+const generarValoresReporte = movimientos => [
+  movimientos.length,
+  totalIngresos(movimientos),
+  totalGastos(movimientos),
+  calcularSaldo(movimientos)
 ];
 
-// Reto P2: promedio absoluto de los movimientos (DRY: reusa montosAbsolutos y calcularSaldo)
-const promedioMovimiento = valores =>
-  valores.length === 0 ? 0 : calcularSaldo(montosAbsolutos(valores)) / valores.length;
+// 🗑️ montosAbsolutos ya no existe: valor siempre es positivo.
 
-// ---------- Parte 3: composición + DRY ----------
+// Reto P1: agrupa con .reduce → { ingresos: [...], gastos: [...] }
+const agruparPorTipo = movimientos =>
+  movimientos.reduce(
+    (grupos, movimiento) => {
+      if (movimiento.tipo === 'ingreso') {
+        return { ...grupos, ingresos: [...grupos.ingresos, movimiento] };
+      }
+      return { ...grupos, gastos: [...grupos.gastos, movimiento] };
+    },
+    { ingresos: [], gastos: [] }
+  );
 
-const promedioIngresos = valores => {
-  const ingresos = obtenerIngresos(valores);
-  if (ingresos.length === 0) return 0;
-  return totalIngresos(valores) / ingresos.length;
-};
-
-// Reto P3: true si el total de gastos NO supera el límite
-const validarPresupuesto = (valores, limite) => Math.abs(totalGastos(valores)) <= limite;
-
-// Logro de C05 en versión funcional: ingreso más alto y gasto más negativo
-const ingresoMasAlto = valores =>
-  obtenerIngresos(valores).reduce((maximo, valor) => (valor > maximo ? valor : maximo), 0);
-
-const gastoMasNegativo = valores =>
-  obtenerGastos(valores).reduce((minimo, valor) => (valor < minimo ? valor : minimo), 0);
-
-// ---------- Logro 1: estadística ----------
-
-const mediana = valores => {
-  if (valores.length === 0) return 0;
-  const ordenados = [...valores].sort((a, b) => a - b); // copia: no muta el original
-  const mitad = Math.floor(ordenados.length / 2);
-  return ordenados.length % 2 === 0
-    ? (ordenados[mitad - 1] + ordenados[mitad]) / 2
-    : ordenados[mitad];
-};
-
-const desviacionEstandar = valores => {
-  if (valores.length === 0) return 0;
-  const media = calcularSaldo(valores) / valores.length;
-  const varianza = valores
-    .map(valor => (valor - media) ** 2)
-    .reduce((acumulador, cuadrado) => acumulador + cuadrado, 0) / valores.length;
-  return Math.sqrt(varianza);
-};
-
-// ---------- Logro 2: categorización por monto (en valor absoluto) ----------
-// bajo: < 100 · medio: 100 a 999.99 · alto: ≥ 1000
-const categorizarPorMonto = valores => ({
-  bajo: valores.filter(valor => Math.abs(valor) < 100),
-  medio: valores.filter(valor => Math.abs(valor) >= 100 && Math.abs(valor) < 1000),
-  alto: valores.filter(valor => Math.abs(valor) >= 1000)
-});
-
-// ---------- Salida (IMPURA: console.log es un efecto) ----------
-
-const imprimirReporte = (nombres, valores) => {
+// Salida (IMPURA). Un solo argumento: cada objeto trae su nombre y tipo.
+const imprimirReporte = movimientos => {
   console.log('--- Resumen Final ---');
 
-  valores.forEach((valor, indice) => {
-    const tipo = valor > 0 ? 'ingreso' : 'gasto';
-    console.log(`  ${indice + 1}. ${nombres[indice]} (${tipo}): $${Math.abs(valor).toFixed(2)}`);
+  movimientos.forEach((movimiento, indice) => {
+    console.log(`  ${indice + 1}. ${movimiento.datosMovimiento()}`);
   });
 
-  const reporte = generarValoresReporte(valores);
+  const reporte = generarValoresReporte(movimientos);
   console.log('Total movimientos:', reporte[0]);
   console.log('Total ingresos: $' + reporte[1].toFixed(2));
-  console.log('Total gastos: $' + Math.abs(reporte[2]).toFixed(2));
+  console.log('Total gastos: $' + reporte[2].toFixed(2));   // ya es positivo: sin Math.abs
   console.log('Saldo: $' + reporte[3].toFixed(2));
 };
