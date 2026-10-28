@@ -39,6 +39,16 @@ Retos y logros:
 
 `antiguedadEnDias()` usa `this.creadoEn` (un `Date`) porque `this.fecha` es un texto formateado y no se puede restar de forma fiable.
 
+### Entrega del Lab 07: versión con funciones constructoras
+
+La entrega pide la forma clásica de POO en JavaScript, así que el mismo modelo también está escrito con **funciones constructoras**:
+
+- `oop-constructores.js`: `function Movimiento(nombre, tipo, valor) {}` y `function Presupuesto() {}`, con métodos definidos como `this.metodo = function () {}`.
+- `demo-constructores.js` + `constructores.html`: crea varios objetos con `new`, los agrega al presupuesto y muestra en consola el objeto, una tabla, `resumen()`, la validación, `buscarPorNombre`, `eliminar` e `instanceof`.
+- **Demo en vivo:** https://naaria.github.io/personal-budget/constructores.html (abrir la consola).
+
+Diferencia con `class`: con la función constructora, cada objeto guarda **su propia copia** de cada método (`salario.esIngreso === cena.esIngreso` → `false`). Con `class`, todas las instancias comparten el mismo método a través del prototipo.
+
 ## Laboratorio 08 — Tailwind CSS: el Gestor cobra vida
 
 **Sitio:** https://naaria.github.io/personal-budget/ (la versión final del Lab 08 es la rama `main`)
