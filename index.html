@@ -4,77 +4,111 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gestor de Presupuesto</title>
+  <!-- Fuente Urbanist (estilo de la referencia de diseño) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <!-- P0: Tailwind por Play CDN (sin npm ni compilar) -->
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <!-- Logro 1: las clases dark: se activan solas si el sistema está en modo oscuro -->
-<body class="min-h-screen bg-gray-50 dark:bg-gray-900">
-  <main class="max-w-4xl mx-auto px-4 py-8">
-    <header class="mb-6">
-      <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100">💰 Gestor de Presupuesto</h1>
-      <p class="text-gray-500 dark:text-gray-400">Tu dinero, bajo control.</p>
-    </header>
+<body class="min-h-screen bg-neutral-200 font-['Urbanist'] text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-100">
+  <main class="max-w-5xl mx-auto px-3 py-6 sm:px-6 sm:py-10">
+    <!-- Contenedor gris claro con bordes muy redondeados -->
+    <div class="rounded-[2rem] bg-neutral-100 p-4 shadow-sm sm:p-6 dark:bg-neutral-900">
 
-    <!-- P4: móvil = 1 columna · desde md (768px) = 2 columnas -->
-    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- Tarjeta resumen -->
-      <div class="p-6 bg-white rounded-xl shadow transition hover:shadow-lg dark:bg-gray-800">
-        <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">Saldo total</h2>
-        <p id="saldo" class="mt-1 text-4xl font-bold text-gray-800 dark:text-gray-100">$0.00</p>
-        <div class="flex gap-4 mt-4">
-          <!-- Logro 2: micro-animación al pasar el mouse -->
-          <div class="flex-1 p-3 bg-green-50 rounded-lg transition hover:scale-105 dark:bg-green-950">
-            <p class="text-xs text-green-700 dark:text-green-300">Ingresos</p>
-            <p id="ingresos" class="text-lg font-semibold text-green-700 dark:text-green-300">$0.00</p>
-          </div>
-          <div class="flex-1 p-3 bg-red-50 rounded-lg transition hover:scale-105 dark:bg-red-950">
-            <p class="text-xs text-red-700 dark:text-red-300">Gastos</p>
-            <p id="gastos" class="text-lg font-semibold text-red-700 dark:text-red-300">$0.00</p>
+      <header class="mb-6 flex items-center gap-3 px-1">
+        <span class="grid h-12 w-12 place-items-center rounded-full bg-lime-300 text-2xl" aria-hidden="true">💰</span>
+        <div>
+          <h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Gestor de Presupuesto</h1>
+          <p class="text-neutral-500 dark:text-neutral-400">Tu dinero, bajo control.</p>
+        </div>
+      </header>
+
+      <!-- P4: móvil = 1 columna · desde md (768px) = 2 columnas -->
+      <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Tarjeta saldo (blanca) -->
+        <div class="flex flex-col justify-between rounded-3xl bg-white p-6 shadow-sm transition hover:shadow-md dark:bg-neutral-800">
+          <h2 class="text-sm text-neutral-500 dark:text-neutral-400">Saldo total</h2>
+          <p id="saldo" class="mt-2 text-5xl font-light tracking-tight sm:text-6xl">$0.00</p>
+          <p class="mt-6 inline-flex w-fit items-center gap-2 rounded-full border border-neutral-200 px-3 py-1 text-xs text-neutral-500 dark:border-neutral-700 dark:text-neutral-400">
+            <span class="h-2 w-2 rounded-full bg-lime-400" aria-hidden="true"></span>
+            Ingresos menos gastos
+          </p>
+        </div>
+
+        <!-- Tarjeta ingresos / gastos (verde lima, como "Your Rewards") -->
+        <div class="rounded-3xl bg-lime-300 p-6 text-neutral-900 shadow-sm">
+          <h2 class="inline-flex items-center rounded-full bg-green-900 px-4 py-1.5 text-sm font-medium tracking-wide text-lime-200">RESUMEN</h2>
+          <div class="mt-6 grid grid-cols-2 gap-3">
+            <!-- Logro 2: micro-animación al pasar el mouse -->
+            <div class="rounded-2xl bg-white/50 p-4 transition hover:scale-105">
+              <p class="text-xs text-neutral-700">Ingresos</p>
+              <p id="ingresos" class="mt-1 text-2xl font-medium text-green-800">$0.00</p>
+            </div>
+            <div class="rounded-2xl bg-white/50 p-4 transition hover:scale-105">
+              <p class="text-xs text-neutral-700">Gastos</p>
+              <p id="gastos" class="mt-1 text-2xl font-medium text-red-700">$0.00</p>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- Tarjeta formulario -->
-      <div class="p-6 bg-white rounded-xl shadow transition hover:shadow-lg dark:bg-gray-800">
-        <h2 class="mb-4 text-lg font-semibold text-gray-800 dark:text-gray-100">Agregar movimiento</h2>
-        <form id="form-mov" class="space-y-3">
-          <label for="nombre" class="sr-only">Nombre</label>
-          <input id="nombre" type="text" placeholder="Nombre" required
-            class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100">
+      <section class="mt-4 grid grid-cols-1 md:grid-cols-5 gap-4">
+        <!-- Tarjeta formulario -->
+        <div class="rounded-3xl bg-white p-6 shadow-sm md:col-span-2 dark:bg-neutral-800">
+          <div class="mb-5 flex items-center gap-3">
+            <span class="grid h-10 w-10 place-items-center rounded-full border border-neutral-200 text-lg dark:border-neutral-700" aria-hidden="true">＋</span>
+            <h2 class="text-lg font-medium">Agregar movimiento</h2>
+          </div>
+          <form id="form-mov" class="space-y-3">
+            <label for="nombre" class="sr-only">Nombre</label>
+            <input id="nombre" type="text" placeholder="Nombre" required
+              class="w-full rounded-2xl border-0 bg-neutral-100 px-4 py-3 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-lime-400 dark:bg-neutral-700">
 
-          <label for="tipo" class="sr-only">Tipo</label>
-          <select id="tipo" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100">
-            <option value="ingreso">Ingreso</option>
-            <option value="gasto">Gasto</option>
-          </select>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="tipo" class="sr-only">Tipo</label>
+                <select id="tipo" class="w-full rounded-2xl border-0 bg-neutral-100 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-lime-400 dark:bg-neutral-700">
+                  <option value="ingreso">Ingreso</option>
+                  <option value="gasto">Gasto</option>
+                </select>
+              </div>
+              <div>
+                <!-- Logro 3: categoría que se muestra como badge en cada movimiento -->
+                <label for="categoria" class="sr-only">Categoría</label>
+                <select id="categoria" class="w-full rounded-2xl border-0 bg-neutral-100 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-lime-400 dark:bg-neutral-700">
+                  <option value="sueldo">Sueldo</option>
+                  <option value="trabajo">Trabajo extra</option>
+                  <option value="comida">Comida</option>
+                  <option value="transporte">Transporte</option>
+                  <option value="ocio">Ocio</option>
+                  <option value="otros">Otros</option>
+                </select>
+              </div>
+            </div>
 
-          <!-- Logro 3: categoría que se muestra como badge en cada movimiento -->
-          <label for="categoria" class="sr-only">Categoría</label>
-          <select id="categoria" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100">
-            <option value="sueldo">Sueldo</option>
-            <option value="trabajo">Trabajo extra</option>
-            <option value="comida">Comida</option>
-            <option value="transporte">Transporte</option>
-            <option value="ocio">Ocio</option>
-            <option value="otros">Otros</option>
-          </select>
+            <label for="monto" class="sr-only">Monto</label>
+            <input id="monto" type="number" placeholder="Monto" min="0.01" step="0.01" required
+              class="w-full rounded-2xl border-0 bg-neutral-100 px-4 py-3 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-lime-400 dark:bg-neutral-700">
 
-          <label for="monto" class="sr-only">Monto</label>
-          <input id="monto" type="number" placeholder="Monto" min="0.01" step="0.01" required
-            class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100">
+            <p id="error" class="text-sm text-red-600 dark:text-red-400" role="alert"></p>
 
-          <p id="error" class="text-sm text-red-600 dark:text-red-400" role="alert"></p>
+            <button type="submit" class="w-full rounded-full bg-green-900 p-3 font-medium text-lime-200 hover:bg-green-800 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-lime-400 focus-visible:ring-offset-2">Agregar</button>
+          </form>
+        </div>
 
-          <button type="submit" class="w-full p-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">Agregar</button>
-        </form>
-      </div>
-    </section>
-
-    <section class="mt-6 p-6 bg-white rounded-xl shadow dark:bg-gray-800">
-      <h2 class="mb-4 text-lg font-semibold text-gray-800 dark:text-gray-100">Movimientos</h2>
-      <!-- P5: vacía; la llena app.js -->
-      <ul id="lista" class="space-y-2"></ul>
-    </section>
+        <!-- Lista de movimientos (como "Transactions") -->
+        <div class="rounded-3xl bg-white p-6 shadow-sm md:col-span-3 dark:bg-neutral-800">
+          <div class="mb-2 flex items-center gap-3">
+            <span class="grid h-10 w-10 place-items-center rounded-full border border-neutral-200 text-lg dark:border-neutral-700" aria-hidden="true">≡</span>
+            <h2 class="text-lg font-medium">Movimientos</h2>
+          </div>
+          <!-- P5: vacía; la llena app.js -->
+          <ul id="lista" class="divide-y divide-neutral-100 dark:divide-neutral-700"></ul>
+        </div>
+      </section>
+    </div>
   </main>
 
   <script src="oop-objects.js"></script>   <!-- class Movimiento y Presupuesto, de C07 -->

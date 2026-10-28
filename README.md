@@ -43,14 +43,14 @@ Retos y logros:
 
 **Sitio:** https://naaria.github.io/personal-budget/ (la versión final del Lab 08 es la rama `main`)
 
-Interfaz construida por grupos de clases de Tailwind (Play CDN, sin npm ni compilación):
+Interfaz construida por grupos de clases de Tailwind (Play CDN, sin npm ni compilación). El diseño visual se inspira en un dashboard financiero de referencia (tarjetas redondeadas, acento verde lima, números grandes y finos), sin agregar funciones nuevas.
 
 | Parte | Grupo | Clases usadas |
 | --- | --- | --- |
 | P1 | Layout (flex + grid) | `max-w-4xl mx-auto`, `grid gap-6`, `flex gap-4`, `flex-1`, `flex items-center justify-between` |
 | P2 | Caja (espaciado + tamaño) | `min-h-screen`, `px-4 py-8`, `p-6`, `p-3`, `mt-4`, `mb-6`, `space-y-3`, `w-full` |
-| P3 | Estética | `text-4xl font-bold`, `bg-white rounded-xl shadow`, `bg-green-50` / `bg-red-50`, `border-l-4 border-green-500` |
-| P4 | Modificadores | `hover:bg-blue-700 transition`, `focus:ring-2 focus:ring-blue-500`, `grid-cols-1 md:grid-cols-2` (mobile-first) |
+| P3 | Estética | Fuente Urbanist, `text-6xl font-light` para el saldo, tarjetas `bg-white rounded-3xl shadow-sm`, tarjeta destacada `bg-lime-300`, botón `bg-green-900 rounded-full`, ingresos en verde y gastos en rojo |
+| P4 | Modificadores | `hover:bg-green-800 transition`, `focus:ring-2 focus:ring-lime-400`, `grid-cols-1 md:grid-cols-2` y `md:grid-cols-5` (mobile-first) |
 
 **P5 — conexión con JavaScript (`app.js`):** reusa `Movimiento` y `Presupuesto` de C07. Al enviar el formulario se crea un `new Movimiento(...)`, se agrega con `presupuesto.agregar(...)` y `render()` vuelve a pintar la lista (`map(liHTML).join('')`) y el saldo.
 

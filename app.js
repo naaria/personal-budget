@@ -28,29 +28,37 @@ function liHTML(m) {
   const ingreso = m.esIngreso();
 
   // 2. Declaramos las variables usando 'let' porque vamos a asignarles un valor más adelante
-  let caja;
+  let icono;
   let texto;
   let signo;
+  let flecha;
 
   // 3. Estructura condicional clásica
   if (ingreso) {
-    caja = 'bg-green-50 border-green-500 dark:bg-green-950';
-    texto = 'text-green-700 dark:text-green-300';
+    icono = 'bg-lime-200 text-green-900';
+    texto = 'text-green-600 dark:text-green-400';
     signo = '+';
+    flecha = '↙';   // el dinero entra
   } else {
-    caja = 'bg-red-50 border-red-500 dark:bg-red-950';
-    texto = 'text-red-700 dark:text-red-300';
+    icono = 'bg-red-100 text-red-700';
+    texto = 'text-red-600 dark:text-red-400';
     signo = '-';
+    flecha = '↗';   // el dinero sale
   }
 
   // 4. Retornamos la plantilla HTML (Logro 3: badge de categoría)
-  return `<li class="flex items-center justify-between p-3 border-l-4 rounded ${caja}">
-            <span class="text-gray-800 dark:text-gray-100">
-              <span class="font-medium">${escaparHTML(m.nombre)}</span>
-              <span class="text-xs text-gray-500 dark:text-gray-400">(${m.tipo})</span>
-              <span class="ml-1 text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full dark:bg-gray-700 dark:text-gray-300">${m.categoria}</span>
-            </span>
-            <span class="font-semibold ${texto}">${signo}$${m.valor.toFixed(2)}</span>
+  return `<li class="flex items-center justify-between gap-3 py-3">
+            <div class="flex items-center gap-3">
+              <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full text-lg ${icono}" aria-hidden="true">${flecha}</span>
+              <div>
+                <p class="font-medium">${escaparHTML(m.nombre)}</p>
+                <p class="text-xs text-neutral-500 dark:text-neutral-400">
+                  ${m.tipo}
+                  <span class="ml-1 rounded-full bg-neutral-100 px-2 py-0.5 text-neutral-600 dark:bg-neutral-700 dark:text-neutral-300">${m.categoria}</span>
+                </p>
+              </div>
+            </div>
+            <span class="whitespace-nowrap text-lg font-medium ${texto}">${signo}$${m.valor.toFixed(2)}</span>
           </li>`;
 }
 
