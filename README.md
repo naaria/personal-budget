@@ -41,20 +41,34 @@ Retos y logros:
 
 ## Laboratorio 08 — Tailwind CSS: el Gestor cobra vida
 
-- Interfaz con **Tailwind por Play CDN** (`<script src="https://cdn.tailwindcss.com">`), sin npm ni compilación.
-- **Layout (P1):** `max-w-4xl mx-auto`, `grid` con `gap-6` para resumen + formulario, `flex gap-4` / `flex-1` para ingresos y gastos, y `flex items-center justify-between` en cada movimiento.
-- **Caja (P2):** `px-4 py-8`, `p-6`, `p-3`, `mt-4`, `space-y-3`, `w-full`, `min-h-screen`.
-- **Estética (P3):** tarjetas `bg-white rounded-2xl shadow-sm ring-1`, saldo en `text-4xl font-bold`, ingresos en verde (`emerald`) y gastos en rojo (`rose`).
-- **Modificadores (P4):** `hover:bg-blue-700`, `focus:ring-2`, `focus-visible:` para teclado, `active:scale-[0.98]` y responsive mobile-first: `grid-cols-1 md:grid-cols-2` (apilado en móvil, 2 columnas desde 768 px).
-- **JavaScript (P5):** el formulario reemplaza a `prompt()`. `app.js` reutiliza `Movimiento` y `Presupuesto` del Lab 07: crea la instancia, la valida con `esValido()` y `existeNombre()`, la agrega y vuelve a dibujar saldo, totales, aviso de límite (`verificarLimites()`) y lista. Cada movimiento tiene un botón ✕ que usa `eliminar()`.
-- Seguridad: las filas se crean con `createElement` + `textContent`, así lo que escribe la persona nunca se interpreta como HTML.
+**Sitio:** https://naaria.github.io/personal-budget/ (la versión final del Lab 08 es la rama `main`)
 
-La versión de consola (con `prompt`) de los labs anteriores sigue disponible en los tags `lab05`, `lab06` y `lab07`. `functional-utils.js` queda en el repo como la versión funcional del Lab 07; la interfaz no lo necesita porque usa los métodos de `Presupuesto`.
+Interfaz construida por grupos de clases de Tailwind (Play CDN, sin npm ni compilación):
+
+| Parte | Grupo | Clases usadas |
+| --- | --- | --- |
+| P1 | Layout (flex + grid) | `max-w-4xl mx-auto`, `grid gap-6`, `flex gap-4`, `flex-1`, `flex items-center justify-between` |
+| P2 | Caja (espaciado + tamaño) | `min-h-screen`, `px-4 py-8`, `p-6`, `p-3`, `mt-4`, `mb-6`, `space-y-3`, `w-full` |
+| P3 | Estética | `text-4xl font-bold`, `bg-white rounded-xl shadow`, `bg-green-50` / `bg-red-50`, `border-l-4 border-green-500` |
+| P4 | Modificadores | `hover:bg-blue-700 transition`, `focus:ring-2 focus:ring-blue-500`, `grid-cols-1 md:grid-cols-2` (mobile-first) |
+
+**P5 — conexión con JavaScript (`app.js`):** reusa `Movimiento` y `Presupuesto` de C07. Al enviar el formulario se crea un `new Movimiento(...)`, se agrega con `presupuesto.agregar(...)` y `render()` vuelve a pintar la lista (`map(liHTML).join('')`) y el saldo.
+
+Reto y logros:
+- **Reto:** las cajitas de Ingresos y Gastos también se actualizan en cada `render()` (`totalIngresos()` / `totalGastos()`).
+- **Logro 1 — Modo oscuro:** clases `dark:` que se activan con el modo oscuro del sistema.
+- **Logro 2 — Micro-animación:** `transition hover:scale-105` en las cajitas del resumen y `hover:shadow-lg` en las tarjetas.
+- **Logro 3 — Badge de categoría:** nuevo campo "Categoría" en el formulario; `Movimiento` recibe un 4.º parámetro opcional (`categoria = 'general'`).
+
+Extras:
+- Si `agregar()` rechaza el movimiento (monto inválido o nombre repetido, validado en C07), se muestra un mensaje de error.
+- `escaparHTML()` evita que un nombre como `<b>Taxi</b>` se interprete como HTML al usar `innerHTML`.
+- Cada campo tiene un `<label class="sr-only">` para lectores de pantalla.
 
 ## Cómo ver cada laboratorio
 
 ```bash
-git checkout lab05   # o lab06, lab07, lab08
+git checkout lab05   # o lab06, lab07 (el Lab 08 final está en main)
 # abre index.html en el navegador (y la consola con F12 en los labs 05–07)
 git checkout main    # para volver
 ```

@@ -5,10 +5,12 @@
 // ---------- class Movimiento (construida por capas) ----------
 // Capa 1: el molde · Capa 2: constructor con propiedades · Capa 3: métodos
 class Movimiento {
-  constructor(nombre, tipo, valor) {
+  // C08 (Logro 3): categoria es opcional; si no se pasa, vale 'general'
+  constructor(nombre, tipo, valor, categoria = 'general') {
     this.nombre = nombre;   // "guarda en ESTE objeto la propiedad nombre"
     this.tipo = tipo;       // 'ingreso' o 'gasto' (explícito, ya no por signo)
     this.valor = valor;     // SIEMPRE positivo
+    this.categoria = categoria;
     this.fecha = new Date().toLocaleDateString();
     this.creadoEn = new Date(); // fecha completa, para poder calcular diferencias
   }
